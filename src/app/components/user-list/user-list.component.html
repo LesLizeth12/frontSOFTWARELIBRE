@@ -1,7 +1,38 @@
-<p>user-list works!</p>
+<p>FORMULARIO DE USUARIO</p>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <input placeholder="ingrese nombre" formControlName="name">
+    <input placeholder="ingrese correo" formControlName="email">
+    <button type="submit">GUARDAR</button>
+    <button type="button" (click)="resetForm()">CANCELAR</button>
+</form>
+
+
+
 <ul>
     <!--VARIABLE:users-->
     <li *ngFor="let user of users"> 
         {{user.name}} {{user.email}}
     </li>
 </ul>
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th>NOMBRE</th>
+            <th>EMAIL</th>
+            <th>ACCIONES</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td> 
+                <button (click)="editUser(user)">EDITAR</button>
+                <button (click)="deleteUser(user.id)">ELIMINAR</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
