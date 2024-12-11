@@ -20,6 +20,10 @@ export class UserService {
   }
 
   updateUser(id:number,user:any):Observable<any>{
-    return this.http.put<any>(`${this.apiurl}/${user.id}`,user);
+    return this.http.put(`${this.apiurl}/${id}`,user);
+  }
+
+  deleteUser(id: number):Observable<any>{
+    return this.http.delete(`${this.apiurl}/${id}`);
   }
 }

@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { UserService } from 'src/app/services/user.service';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-user-list',
@@ -9,15 +12,21 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit{
+  @ViewChild('userModal') userModal?: UserFormComponent;
   users:User[]=[]; //VARIABLE:users
   userForm:FormGroup;
   currentUserId?:number;
   editMode:boolean =false;
-  constructor(private userService: UserService, private fb: FormBuilder){
+
+  constructor(private userService: UserService, private fb: FormBuilder,private modalService:NgbModal){
+
     this.userForm=this.fb.group({
+      id:[''],
       name:[''],
       email:['']
     });
+    
+
   }
   ngOnInit(): void {
     this.loadUsers();
@@ -31,6 +40,8 @@ export class UserListComponent implements OnInit{
   }
 
   editUser(user: any){
+    const modalElement=document.getElementById('userModal');
+    //const modal=new bootstrap.modal(modalElement);
     this.currentUserId=user.id;
     this.userForm.patchValue(user);
     console.log(this.currentUserId);
@@ -38,7 +49,12 @@ export class UserListComponent implements OnInit{
   }
 
   deleteUser(id: number){
-    
+    const confirmacion=confirm("ESTAS SEGURO DE ELIMINAR?");
+    if(confirmacion){
+      this.userService.deleteUser(id).subscribe(()=>{
+        this.loadUsers();
+      })
+    }
   }
 
   onSubmit(){
@@ -48,10 +64,36 @@ export class UserListComponent implements OnInit{
         this.loadUsers();
         this.resetForm();
       })
+    }else{
+      this.userService.createUser(this.userForm.value).subscribe(()=>{
+        this.loadUsers();
+        this.resetForm();
+      })
     }
   }
 
   resetForm(){
     this.userForm.reset();
+  }
+
+  openUserModal(user?: User){
+    const modalRef=this.modalService.open(UserFormComponent);
+    if(user){
+      modalRef.componentInstance.user = user;
+      modalRef.componentInstance.isEditMode=true;
+    }
+    modalRef.result.then((result)=>{
+      if(result){
+        if(result.id){
+          this.userService.updateUser(result.id,result).subscribe(()=>{
+            this.loadUsers();
+          })
+        }else{
+          this.userService.createUser(result).subscribe(()=>{
+            this.loadUsers();
+          })
+        }
+      }
+    })
   }
 }

@@ -1,24 +1,35 @@
-<p>FORMULARIO DE USUARIO</p>
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-    <input placeholder="ingrese nombre" formControlName="name">
-    <input placeholder="ingrese correo" formControlName="email">
-    <button type="submit">GUARDAR</button>
-    <button type="button" (click)="resetForm()">CANCELAR</button>
-</form>
+<div class="container">
+    <h3>FORMULARIO DE USUARIO</h3>
+    <button class="btn btn-primary" (click)="openUserModal()">AGREGAR USUARIO</button>
 
 
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="form-group">
+                <label for="txtUsuario">USUARIO</label>
+                <input class="form-control" placeholder="ingrese nombre" formControlName="name">
 
-<ul>
-    <!--VARIABLE:users-->
-    <li *ngFor="let user of users"> 
-        {{user.name}} {{user.email}}
-    </li>
-</ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="txtCorreo">CORREO</label>
+                <input class="form-control" placeholder="ingrese correo" formControlName="email">
+
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary">GUARDAR</button> &nbsp;
+                <button type="button"  class="btn btn-danger" (click)="resetForm()">CANCELAR</button>
+            </div>
+        </div>
+    </form>
 
 
-
-<table>
-    <thead>
+<p>LISTADO DE USUARIOS</p>
+<table class="table">
+    <thead class="thead table-dark">
         <tr>
             <th>NOMBRE</th>
             <th>EMAIL</th>
@@ -30,9 +41,14 @@
             <td>{{user.name}}</td>
             <td>{{user.email}}</td>
             <td> 
-                <button (click)="editUser(user)">EDITAR</button>
-                <button (click)="deleteUser(user.id)">ELIMINAR</button>
+                <button class="btn btn-warning" (click)="openUserModal(user)">EDITAR </button> &nbsp;
+                <button class="btn btn-danger" (click)="deleteUser(user.id)">ELIMINAR</button>
             </td>
         </tr>
     </tbody>
 </table>
+
+    <app-user-form #userModal></app-user-form>
+</div>
+
+
